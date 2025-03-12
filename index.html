@@ -56,9 +56,22 @@
           height: 100%;
           object-fit: cover;
         }
+        
+        /* Style for the stream name input */
+        .stream-form {
+          margin-bottom: 20px;
+        }
+        
+        .stream-form input {
+          padding: 8px;
+          margin-right: 10px;
+          border: 1px solid #ddd;
+          border-radius: 4px;
+          width: 250px;
+        }
         </style>
-      <script type="module" crossorigin src="/sneak/assets/index-BYb8ZfHy.js"></script>
-      <link rel="stylesheet" crossorigin href="/sneak/assets/index-DKSW5Y4D.css">
+      <script type="module" crossorigin src="/sneak/assets/index-CkQh1Lyb.js"></script>
+      <link rel="stylesheet" crossorigin href="/sneak/assets/index-BV3eBWiw.css">
     
 <script>
   // Fix for GitHub Pages - check if we're on GitHub Pages and load the Agora SDK from CDN if needed
@@ -71,6 +84,12 @@
 </head>
     <body>
         <h2 class="left-align">Agora Web SDK Quickstart</h2>
+        
+        <!-- Stream naming form -->
+        <div class="row stream-form">
+            <input type="text" id="stream-name" placeholder="Enter stream name" />
+        </div>
+        
         <div class="row">
             <div>
                 <button type="button" id="host-join">Join as host</button>
@@ -78,5 +97,12 @@
                 <button type="button" id="leave">Leave</button>
             </div>
         </div>
+        
+        <!-- Container for active streams list -->
+        <div class="row" id="active-streams-container">
+            <h3>📺 Live Streams</h3>
+            <div id="active-streams-list"></div>
+        </div>
+        
     </body>
 </html>
