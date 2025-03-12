@@ -1,6 +1,6 @@
 import './style.css'
-// Use the regular import which will be resolved by Vite
-import AgoraRTC from 'agora-rtc-sdk-ng'
+// Import the Agora SDK without using the alias
+import AgoraRTC from './agora-rtc-sdk.js'
 
 // RTC client instance
 let client = null
@@ -10,13 +10,13 @@ let localAudioTrack = null
 let localVideoTrack = null
 
 // Connection parameters
-let appId = import.meta.env.VITE_AGORA_APP_ID || ""
+let appId = import.meta.env.VITE_AGORA_APP_ID || "fbb5b55989034029abac412d655d05ae" // Fallback to hardcoded ID for demo
 let channel = "test" // Consider making this configurable via UI
 let token = null
 let uid = 0 // User ID
 
 // Add debug info
-console.log("App ID available: ", Boolean(appId));
+console.log("App ID used:", appId ? "From environment" : "Fallback value");
 console.log("Current base URL: ", window.location.href);
 
 // Initialize the AgoraRTC client
