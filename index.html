@@ -57,8 +57,18 @@
           object-fit: cover;
         }
         </style>
-      <script type="module" crossorigin src="/sneak/assets/index-CbceglWI.js"></script>
-    </head>
+      <script type="module" crossorigin src="/sneak/assets/index-BYb8ZfHy.js"></script>
+      <link rel="stylesheet" crossorigin href="/sneak/assets/index-DKSW5Y4D.css">
+    
+<script>
+  // Fix for GitHub Pages - check if we're on GitHub Pages and load the Agora SDK from CDN if needed
+  if (window.location.href.includes('/sneak/') && !window.location.href.includes('localhost') && !window.AgoraRTC) {
+    const scriptCDN = document.createElement('script');
+    scriptCDN.src = 'https://download.agora.io/sdk/release/AgoraRTC_N-4.23.2.js';
+    document.head.appendChild(scriptCDN);
+  }
+</script>
+</head>
     <body>
         <h2 class="left-align">Agora Web SDK Quickstart</h2>
         <div class="row">
