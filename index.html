@@ -56,10 +56,29 @@
           height: 100%;
           object-fit: cover;
         }
+        
+        /* Style for the stream name input */
+        .stream-form {
+          margin-bottom: 20px;
+        }
+        
+        .stream-form input {
+          padding: 8px;
+          margin-right: 10px;
+          border: 1px solid #ddd;
+          border-radius: 4px;
+          width: 250px;
+        }
         </style>
     </head>
     <body>
         <h2 class="left-align">Agora Web SDK Quickstart</h2>
+        
+        <!-- Stream naming form -->
+        <div class="row stream-form">
+            <input type="text" id="stream-name" placeholder="Enter stream name" />
+        </div>
+        
         <div class="row">
             <div>
                 <button type="button" id="host-join">Join as host</button>

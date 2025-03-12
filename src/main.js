@@ -10,9 +10,9 @@ let localVideoTrack = null
 
 // Connection parameters
 let appId = import.meta.env.VITE_AGORA_APP_ID || "fbb5b55989034029abac412d655d05ae" // Fallback to hardcoded ID for demo
-let channel = "test" // Consider making this configurable via UI
+let channel = "test" // Default channel name
 let token = null
-let uid = 0 // User ID
+let uid = Math.floor(Math.random() * 1000000) // Random user ID for better identification
 
 // Add debug info
 console.log("App ID used:", appId ? "From environment" : "Fallback value");
@@ -67,6 +67,13 @@ function displayLocalVideo() {
 async function joinAsHost() {
     console.log("Join as host clicked");
     try {
+        // Get stream name from input
+        const streamNameInput = document.getElementById("stream-name")
+        const streamName = streamNameInput.value.trim() || `Stream-${uid}`
+        
+        // Use stream name as channel name if provided
+        channel = streamName
+        
         await client.join(appId, channel, token, uid)
         console.log("Successfully joined channel as host");
         // A host can both publish tracks and subscribe to tracks
@@ -86,6 +93,18 @@ async function joinAsHost() {
 async function joinAsAudience() {
     console.log("Join as audience clicked");
     try {
+        // Get stream name from input (which is used as channel)
+        const streamNameInput = document.getElementById("stream-name")
+        const streamName = streamNameInput.value.trim()
+        
+        if (!streamName) {
+            alert("Please enter a stream name to join as audience")
+            return
+        }
+        
+        // Use stream name as channel
+        channel = streamName
+        
         await client.join(appId, channel, token, uid)
         console.log("Successfully joined channel as audience");
         // Set ultra-low latency level
