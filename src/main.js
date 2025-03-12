@@ -1,6 +1,5 @@
 import './style.css'
 import AgoraRTC from 'agora-rtc-sdk-ng'
-import { defineConfig } from 'vite'
 
 // RTC client instance
 let client = null
@@ -15,14 +14,20 @@ let channel = "test" // Consider making this configurable via UI
 let token = null
 let uid = 0 // User ID
 
+// Add debug info
+console.log("App ID available: ", Boolean(appId));
+console.log("Current base URL: ", window.location.href);
+
 // Initialize the AgoraRTC client
 function initializeClient() {
+    console.log("Initializing AgoraRTC client");
     client = AgoraRTC.createClient({ mode: "live", codec: "vp8", role: "host" })
     setupEventListeners()
 }
 
 // Handle client events
 function setupEventListeners() {
+    console.log("Setting up event listeners");
     client.on("user-published", async (user, mediaType) => {
         await client.subscribe(user, mediaType)
         console.log("subscribe success")
@@ -41,12 +46,14 @@ function setupEventListeners() {
 
 // Create and publish local tracks
 async function createLocalTracks() {
+    console.log("Creating local tracks");
     localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack()
     localVideoTrack = await AgoraRTC.createCameraVideoTrack()
 }
 
 // Display local video
 function displayLocalVideo() {
+    console.log("Displaying local video");
     const localPlayerContainer = document.createElement("div")
     localPlayerContainer.id = uid
     localPlayerContainer.textContent = `Local user ${uid}`
@@ -58,35 +65,49 @@ function displayLocalVideo() {
 
 // Join as a host
 async function joinAsHost() {
-    await client.join(appId, channel, token, uid)
-    // A host can both publish tracks and subscribe to tracks
-    client.setClientRole("host")
-    // Create and publish local tracks
-    await createLocalTracks()
-    await publishLocalTracks()
-    displayLocalVideo()
-    disableJoinButtons()
-    console.log("Host joined and published tracks.")
+    console.log("Join as host clicked");
+    try {
+        await client.join(appId, channel, token, uid)
+        console.log("Successfully joined channel as host");
+        // A host can both publish tracks and subscribe to tracks
+        client.setClientRole("host")
+        // Create and publish local tracks
+        await createLocalTracks()
+        await publishLocalTracks()
+        displayLocalVideo()
+        disableJoinButtons()
+        console.log("Host joined and published tracks.")
+    } catch (error) {
+        console.error("Error joining as host:", error);
+    }
 }
 
 // Join as audience
 async function joinAsAudience() {
-    await client.join(appId, channel, token, uid)
-    // Set ultra-low latency level
-    let clientRoleOptions = { level: 2 }
-    // Audience can only subscribe to tracks
-    client.setClientRole("audience", clientRoleOptions)
-    disableJoinButtons()
-    console.log("Audience joined.")
+    console.log("Join as audience clicked");
+    try {
+        await client.join(appId, channel, token, uid)
+        console.log("Successfully joined channel as audience");
+        // Set ultra-low latency level
+        let clientRoleOptions = { level: 2 }
+        // Audience can only subscribe to tracks
+        client.setClientRole("audience", clientRoleOptions)
+        disableJoinButtons()
+        console.log("Audience joined.")
+    } catch (error) {
+        console.error("Error joining as audience:", error);
+    }
 }
 
 // Publish local tracks
 async function publishLocalTracks() {
+    console.log("Publishing local tracks");
     await client.publish([localAudioTrack, localVideoTrack])
 }
 
 // Display remote user's video
 function displayRemoteVideo(user) {
+    console.log("Displaying remote video for user:", user.uid);
     const remotePlayerContainer = document.createElement("div")
     remotePlayerContainer.id = user.uid.toString()
     remotePlayerContainer.textContent = `Remote user ${user.uid}`
@@ -98,23 +119,28 @@ function displayRemoteVideo(user) {
 
 // Leave the channel
 async function leaveChannel() {
-    if (localAudioTrack) {
-        localAudioTrack.close()
-        localAudioTrack = null
+    console.log("Leave clicked");
+    try {
+        if (localAudioTrack) {
+            localAudioTrack.close()
+            localAudioTrack = null
+        }
+        if (localVideoTrack) {
+            localVideoTrack.close()
+            localVideoTrack = null
+        }
+        const localPlayerContainer = document.getElementById(uid)
+        localPlayerContainer && localPlayerContainer.remove()
+        client.remoteUsers.forEach((user) => {
+            const playerContainer = document.getElementById(user.uid)
+            playerContainer && playerContainer.remove()
+        })
+        await client.leave()
+        enableJoinButtons()
+        console.log("Left the channel.")
+    } catch (error) {
+        console.error("Error leaving channel:", error);
     }
-    if (localVideoTrack) {
-        localVideoTrack.close()
-        localVideoTrack = null
-    }
-    const localPlayerContainer = document.getElementById(uid)
-    localPlayerContainer && localPlayerContainer.remove()
-    client.remoteUsers.forEach((user) => {
-        const playerContainer = document.getElementById(user.uid)
-        playerContainer && playerContainer.remove()
-    })
-    await client.leave()
-    enableJoinButtons()
-    console.log("Left the channel.")
 }
 
 // Disable join buttons
@@ -131,18 +157,46 @@ function enableJoinButtons() {
 
 // Set up event listeners for buttons
 function setupButtonHandlers() {
-    document.getElementById("host-join").onclick = joinAsHost
-    document.getElementById("audience-join").onclick = joinAsAudience
-    document.getElementById("leave").onclick = leaveChannel
+    console.log("Setting up button handlers");
+    
+    const hostButton = document.getElementById("host-join");
+    const audienceButton = document.getElementById("audience-join");
+    const leaveButton = document.getElementById("leave");
+    
+    console.log("Host button found:", Boolean(hostButton));
+    console.log("Audience button found:", Boolean(audienceButton));
+    console.log("Leave button found:", Boolean(leaveButton));
+    
+    if (hostButton) hostButton.onclick = joinAsHost;
+    if (audienceButton) audienceButton.onclick = joinAsAudience;
+    if (leaveButton) leaveButton.onclick = leaveChannel;
+    
+    // Add direct click listeners to debug
+    document.addEventListener('click', function(event) {
+        if (event.target && event.target.id === 'host-join') {
+            console.log('Host button clicked via event listener');
+        }
+        if (event.target && event.target.id === 'audience-join') {
+            console.log('Audience button clicked via event listener');
+        }
+        if (event.target && event.target.id === 'leave') {
+            console.log('Leave button clicked via event listener');
+        }
+    });
 }
 
 // Start live streaming
 function startBasicLiveStreaming() {
-    initializeClient()
-    window.onload = setupButtonHandlers
+    console.log("Starting basic live streaming");
+    initializeClient();
+    
+    // Change from window.onload to addEventListener to avoid conflicts
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setupButtonHandlers);
+    } else {
+        setupButtonHandlers();
+    }
 }
-startBasicLiveStreaming()
 
-export default defineConfig({
-  base: '/sneak/', // This should match your repository name
-})
+// Call the function to start
+startBasicLiveStreaming();
