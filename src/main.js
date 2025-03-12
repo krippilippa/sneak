@@ -1,4 +1,5 @@
 import './style.css'
+// Use the regular import which will be resolved by Vite
 import AgoraRTC from 'agora-rtc-sdk-ng'
 
 // RTC client instance
