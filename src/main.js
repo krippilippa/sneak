@@ -1,5 +1,6 @@
 import './style.css'
 import AgoraRTC from 'agora-rtc-sdk-ng'
+import { defineConfig } from 'vite'
 
 // RTC client instance
 let client = null
@@ -9,8 +10,8 @@ let localAudioTrack = null
 let localVideoTrack = null
 
 // Connection parameters
-let appId = "fbb5b55989034029abac412d655d05ae"
-let channel = "test"
+let appId = import.meta.env.VITE_AGORA_APP_ID || ""
+let channel = "test" // Consider making this configurable via UI
 let token = null
 let uid = 0 // User ID
 
@@ -141,3 +142,7 @@ function startBasicLiveStreaming() {
     window.onload = setupButtonHandlers
 }
 startBasicLiveStreaming()
+
+export default defineConfig({
+  base: '/sneak/', // This should match your repository name
+})
