@@ -21,9 +21,11 @@ jobs:
         run: npm ci
 
       - name: Build
-        run: npm run build
+        run: |
+          echo "Building the project"
+          npm run build
         env:
-          VITE_AGORA_APP_ID: ${{ secrets.VITE_AGORA_APP_ID }}
+          VITE_AGORA_APP_ID: ${{ secrets.VITE_AGORA_APP_ID || 'dummyvalue' }}
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4
