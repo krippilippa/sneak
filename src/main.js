@@ -1,9 +1,5 @@
-// Import the Agora SDK without using the alias
-import AgoraRTCModule from './agora-rtc-sdk.js'
-
-// Wait for SDK to be loaded before initializing
-let AgoraRTC = null;
-let sdkLoaded = false;
+import './style.css'
+import AgoraRTC from 'agora-rtc-sdk-ng'
 
 // RTC client instance
 let client = null
@@ -22,38 +18,9 @@ let uid = 0 // User ID
 console.log("App ID used:", appId ? "From environment" : "Fallback value");
 console.log("Current base URL: ", window.location.href);
 
-// Function to check if SDK is loaded
-function waitForSDK() {
-    console.log("Waiting for Agora SDK to load...");
-    
-    // Check if SDK is loaded every 100ms
-    const checkSDK = setInterval(() => {
-        if (window.AgoraRTC || AgoraRTCModule) {
-            clearInterval(checkSDK);
-            AgoraRTC = window.AgoraRTC || AgoraRTCModule;
-            sdkLoaded = true;
-            console.log("Agora SDK loaded successfully");
-            startBasicLiveStreaming();
-        }
-    }, 100);
-    
-    // Timeout after 10 seconds
-    setTimeout(() => {
-        if (!sdkLoaded) {
-            clearInterval(checkSDK);
-            console.error("Failed to load Agora SDK within timeout period");
-            alert("Failed to load Agora SDK. Please check your connection and try again.");
-        }
-    }, 10000);
-}
-
 // Initialize the AgoraRTC client
 function initializeClient() {
     console.log("Initializing AgoraRTC client");
-    if (!AgoraRTC) {
-        console.error("AgoraRTC is not loaded");
-        return;
-    }
     client = AgoraRTC.createClient({ mode: "live", codec: "vp8", role: "host" })
     setupEventListeners()
 }
@@ -231,5 +198,5 @@ function startBasicLiveStreaming() {
     }
 }
 
-// Start the application by waiting for SDK
-waitForSDK();
+// Call the function to start
+startBasicLiveStreaming();
