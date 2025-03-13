@@ -75,7 +75,11 @@ Create a `.env` file in the root directory with the following content:
 
 ```
 VITE_AGORA_APP_ID=your-agora-app-id
+VITE_SUPABASE_URL=your-supabase-url
+VITE_SUPABASE_KEY=your-supabase-anon-key
 ```
+
+For Supabase, you can find these values in your Supabase project dashboard under Settings → API.
 
 5. Run the application
 ```
@@ -98,20 +102,12 @@ For production use, you'll need to generate and use tokens for secure authentica
 
 ### Supabase Configuration
 
-For production use, move your Supabase URL and key to environment variables:
+The Supabase URL and key are already configured to use environment variables. Make sure your `.env` file includes both `VITE_SUPABASE_URL` and `VITE_SUPABASE_KEY` values.
 
-```javascript
-// In supabase.js
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-const supabaseKey = import.meta.env.VITE_SUPABASE_KEY
-```
-
-Then add these to your `.env` file:
-
-```
-VITE_SUPABASE_URL=your-supabase-url
-VITE_SUPABASE_KEY=your-supabase-anon-key
-```
+For production applications, consider implementing additional security measures:
+- Use Row Level Security rules to restrict access based on user authentication
+- Create and use service roles with limited permissions for specific operations
+- Set up proper CORS configuration in your Supabase project settings
 
 ## License
 

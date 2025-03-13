@@ -1,8 +1,14 @@
 import { createClient } from '@supabase/supabase-js'
 
-// Initialize the Supabase client
-const supabaseUrl = 'https://vmbhrbxdmsizlhfnxhyv.supabase.co'
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZtYmhyYnhkbXNpemxoZm54aHl2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDE3ODAyNTMsImV4cCI6MjA1NzM1NjI1M30.w78Np7LJ5ITiigYz3aAk1x_8EWDFL2b59MgJPm32VDQ'
+// Initialize the Supabase client with environment variables
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || ''
+const supabaseKey = import.meta.env.VITE_SUPABASE_KEY || ''
+
+// Check if environment variables are available
+if (!supabaseUrl || !supabaseKey) {
+    console.warn('⚠️ Supabase URL or Key not found in environment variables. Chat functionality will not work.');
+    console.warn('Please create a .env file with VITE_SUPABASE_URL and VITE_SUPABASE_KEY');
+}
 
 // Create client with explicit options to enable realtime
 const supabase = createClient(supabaseUrl, supabaseKey, {
@@ -13,12 +19,6 @@ const supabase = createClient(supabaseUrl, supabaseKey, {
         }
     }
 })
-
-// No additional auth needed if realtime is enabled in Supabase dashboard
-
-// For a production app, you should store the key in an environment variable
-// const supabaseKey = import.meta.env.VITE_SUPABASE_KEY
-// const supabase = createClient(supabaseUrl, supabaseKey)
 
 /**
  * Send a message to a channel
